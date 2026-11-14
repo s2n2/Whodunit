@@ -1,5 +1,5 @@
 /* Whodunit card: why did that change? */
-const WD_VERSION = "0.1.0";
+const WD_VERSION = "0.2.0";
 
 const ICONS = {
   automation: "mdi:robot-outline",
@@ -9,6 +9,7 @@ const ICONS = {
   device: "mdi:chip",
   source: "mdi:clock-outline",
   loop: "mdi:sync-alert",
+  probable: "mdi:timer-sand",
   unknown: "mdi:help-circle-outline",
 };
 const LABELS = {
@@ -19,6 +20,7 @@ const LABELS = {
   device: "Device / integration",
   source: "Trigger",
   loop: "Loop back to",
+  probable: "Probably",
   unknown: "Unknown",
 };
 const TABS = [
@@ -284,8 +286,18 @@ class WhodunitCard extends HTMLElement {
 
   _linkHtml(link, opts = {}) {
     const icon = ICONS[link.kind] || ICONS.unknown;
-    const label = LABELS[link.kind] || link.kind;
+    let label = LABELS[link.kind] || link.kind;
     let name = esc(link.name);
+    if (link.kind === "probable") {
+      const conf = link.detail === "possibly" ? "Possibly" : "Probably";
+      const delay = opts.changeAt && link.at ? ` · ${Math.max(0, Math.round(opts.changeAt - link.at))}s before` : "";
+      return `<li class="k-probable" title="The device reported this on its own. This command was sent ${
+        link.detail === "possibly" ? "to something in the same area" : "to it"
+      } shortly before.">
+        <ha-icon icon="${ICONS.probable}"></ha-icon>
+        <div><div class="lbl">${conf}${delay}</div><div class="nm">${name} <span class="muted">command</span></div></div>
+      </li>`;
+    }
     if (link.id && link.kind !== "user") name = `<a href="#" data-info="${esc(link.id)}">${name}</a>`;
     let extra = "";
     if (link.kind === "trigger" && link.detail) extra = `<span class="chg">${esc(link.detail)}</span>`;
@@ -309,8 +321,9 @@ class WhodunitCard extends HTMLElement {
     return `<ul class="feed">${this._feed
       .slice(0, 50)
       .map((c) => {
-        const a = c.links[0] || { kind: "unknown", name: "?" };
-        const who = a.kind === "device" ? "device" : a.name;
+        const guessed = c.links[0]?.kind === "probable";
+        const a = (guessed ? c.links[1] || c.links[0] : c.links[0]) || { kind: "unknown", name: "?" };
+        const who = (guessed ? "≈ " : "") + (a.kind === "device" ? "device" : a.kind === "probable" ? a.name : a.name);
         return `<li data-why="${esc(c.entity_id)}" title="${esc(c.sentence)}">
           <span class="t">${fmtTime(c.at)}</span>
           <span class="e"><b>${esc(c.name)}</b> <span class="chg">${esc(changeText(c))}</span></span>
@@ -343,7 +356,7 @@ class WhodunitCard extends HTMLElement {
           (c, i) => `<details ${i === 0 ? "open" : ""}>
             <summary><span class="t">${fmtTime(c.at)}</span> <span class="chg">${esc(changeText(c))}</span>
               <span class="muted">· ${esc(c.links[0]?.name || "")}</span></summary>
-            <ol class="chain">${c.links.map((l) => this._linkHtml(l, { showSource: true })).join("")}</ol>
+            <ol class="chain">${c.links.map((l) => this._linkHtml(l, { showSource: true, changeAt: c.at })).join("")}</ol>
           </details>`
         )
         .join("")
@@ -428,13 +441,15 @@ const STYLE = `
   ul.feed li:hover { background: var(--secondary-background-color, rgba(127,127,127,.08)); }
   ul.feed .t { color: var(--secondary-text-color); font-size:.8em; font-variant-numeric: tabular-nums; }
   ul.feed .e { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .who { display:flex; align-items:center; gap:3px; font-size:.85em; color: var(--secondary-text-color); justify-content:flex-end; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-  .who ha-icon { --mdc-icon-size:16px; flex:none; }
+  .who { display:block; text-align:right; font-size:.85em; color: var(--secondary-text-color); overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+  .who ha-icon { --mdc-icon-size:16px; vertical-align:-3px; margin-right:3px; }
   .hops { margin-left:3px; font-size:.8em; opacity:.8; }
   .k-automation ha-icon, .k-script ha-icon { color: var(--primary-color); }
   .k-user ha-icon { color: var(--accent-color, #ff9800); }
   .k-trigger ha-icon { color: var(--warning-color, #ffa600); }
   .k-loop ha-icon { color: var(--error-color, #db4437); }
+  .k-probable ha-icon { color: var(--secondary-text-color); }
+  .k-probable .lbl { font-style: italic; }
   .sentence { display:flex; gap:8px; align-items:flex-start; background: var(--secondary-background-color, rgba(127,127,127,.1)); padding:10px 12px; border-radius:10px; margin:2px 0 10px; line-height:1.4; }
   .sentence ha-icon { color: var(--primary-color); flex:none; }
   details { border-bottom: 1px solid var(--divider-color); padding: 6px 0; }

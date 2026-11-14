@@ -36,13 +36,19 @@ for i in range(4):
     e.record_run(R("automation", "automation.bathroom_heated_clothes_horse_energy_aware_start_controller", "Bathroom heated clothes horse · energy-aware start controller", "state of binary_sensor.energy_bathroom_rack_power_ready", f"ch{i}", None, None, t + i * 0.02))
 for i in range(12):
     e.record_run(R("automation", "automation.energy_schedule_dispatcher", "Energy schedule · dispatcher", "time pattern", f"d{i}", None, None, now + i * 25))
+# 4b. IR command turns the kitchen screen on; its light reports 6 s later in a fresh context
+e.record_change(S("binary_sensor.pir_kitchen1", "pir_kitchen1", "off", "on", tick(2), "kpir"))
+e.record_run(R("automation", "automation.turn_display_on", "Turn Kitchen Display On", "state of binary_sensor.pir_kitchen1", "kauto", "kpir", None, tick(0.01)))
+e.record_run(R("script", "script.1634521151793", "Kitchen Display - Screen On", None, "kauto", "kpir", None, tick(0.01)))
+e.record_command(m.Command("kauto", "remote.send_command", frozenset({"remote.kitchen_ir"}), frozenset({"kitchen"}), tick(0.01)))
+e.record_change(S("light.kitchen_display_unit_main", "Kitchen DIsplay Unit Main", "off", "on", tick(6.1), "kfresh", area="kitchen"))
 # 5. Sam flips the hallway light from the app
 e.record_change(S("light.hallway", "Hallway Lights", "off", "on", tick(3), "app1", user_id="u2"))
 out = {
   "recent": {"changes": [r.as_dict() for r in e.recent(50)]},
   "explain": {eid: {"entity_id": eid, "name": e.history(eid)[0].change.name, "tracked": True,
                     "changes": [r.as_dict() for r in e.history(eid, 10)], "sentence": e.history(eid)[0].sentence}
-              for eid in ["switch.lounge_candles", "light.lounge_lights_scaled", "switch.towel_rail_bathroom", "light.hallway", "media_player.lounge", "input_boolean.movie_mode"]},
+              for eid in ["light.kitchen_display_unit_main", "switch.lounge_candles", "light.lounge_lights_scaled", "switch.towel_rail_bathroom", "light.hallway", "media_player.lounge", "input_boolean.movie_mode"]},
   "fights": {"active": [f.as_dict() for f in e.active_fights.values()], "recent": [], "window": e.fight_window, "flips": e.fight_flips},
   "busy": {"automations": e.busiest(15)},
 }

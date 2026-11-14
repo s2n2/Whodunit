@@ -103,13 +103,26 @@ class StateChange:
     parent_id: str | None = None
     user_id: str | None = None
     attr_only: bool = False
+    area: str | None = None
+
+
+@dataclass(slots=True)
+class Command:
+    """A service call and what it was aimed at."""
+
+    context_id: str
+    service: str  # "light.turn_on"
+    entity_ids: frozenset[str]
+    areas: frozenset[str]
+    at: float
+    claimed: set[str] = field(default_factory=set)
 
 
 @dataclass(slots=True)
 class Link:
     """One step in a cause chain."""
 
-    kind: str  # automation | script | trigger | user | device | source | loop | unknown
+    kind: str  # automation | script | trigger | user | device | source | loop | probable | unknown
     id: str | None
     name: str
     detail: str | None = None
@@ -135,6 +148,10 @@ class Record:
 
     @property
     def actor(self) -> Link:
+        """The closest real actor; a guessed command step is skipped."""
+        for link in self.links:
+            if link.kind != "probable":
+                return link
         return self.links[0] if self.links else Link("unknown", None, "unknown")
 
     def as_dict(self) -> dict[str, Any]:
@@ -205,6 +222,20 @@ class Fight:
         }
 
 
+_ON_SERVICES = ("turn_on", "open_cover", "unlock", "start", "media_play")
+_OFF_SERVICES = ("turn_off", "close_cover", "lock", "stop", "media_pause", "media_stop")
+
+
+def _consistent(service: str, new_state: str) -> bool:
+    """Rule out a command whose result contradicts the new state."""
+    action = service.rsplit(".", 1)[-1]
+    if action in _ON_SERVICES and new_state in ("off", "closed", "locked", "idle", "paused", "docked"):
+        return False
+    if action in _OFF_SERVICES and new_state in ("on", "open", "unlocked", "playing", "cleaning"):
+        return False
+    return True
+
+
 def _default_time(at: float) -> str:
     return time.strftime("%H:%M:%S", time.localtime(at))
 
@@ -233,11 +264,25 @@ def build_sentence(
         what = f"{change.name} became {change.new}"
     else:
         what = f"{change.name} turned {change.new}"
+    if links and links[0].kind == "probable":
+        guess = links[0]
+        delay = max(0.0, change.at - (guess.at or change.at))
+        head = f"{what} at {fmt_time(change.at)}, {guess.detail} because of {guess.name} {delay:.0f}s earlier"
+        return head + "".join(f", {p}" for p in _phrases(links[1:], "probable")) + "."
+    parts = _phrases(links, None)
+    if not parts:
+        return f"{what} at {fmt_time(change.at)}."
+    return f"{what} at {fmt_time(change.at)} because " + ", ".join(parts) + "."
+
+
+def _phrases(links: list[Link], before: str | None) -> list[str]:
     parts: list[str] = []
     for i, link in enumerate(links):
-        prev = links[i - 1].kind if i else None
+        prev = links[i - 1].kind if i else before
         if link.kind in ("automation", "script"):
-            if prev in ("automation", "script"):
+            if prev == "probable":
+                phrase = f"from {link.kind} {_q(link.name)}"
+            elif prev in ("automation", "script"):
                 phrase = f"called from {link.kind} {_q(link.name)}"
             elif prev == "trigger":
                 phrase = f"which {link.kind} {_q(link.name)} did"
@@ -246,7 +291,9 @@ def build_sentence(
         elif link.kind == "trigger":
             phrase = f"triggered by {link.name} changing {link.detail}"
         elif link.kind == "user":
-            if prev is None:
+            if prev == "probable":
+                phrase = f"sent by {link.name}"
+            elif prev is None:
                 phrase = f"{link.name} did it"
             elif prev == "trigger":
                 phrase = f"which {link.name} did"
@@ -264,9 +311,7 @@ def build_sentence(
         else:
             phrase = "for a reason Whodunit did not see"
         parts.append(phrase)
-    if not parts:
-        return f"{what} at {fmt_time(change.at)}."
-    return f"{what} at {fmt_time(change.at)} because " + ", ".join(parts) + "."
+    return parts
 
 
 class Engine:
@@ -279,6 +324,7 @@ class Engine:
         ignored_entities: Iterable[str] = (),
         fight_window: float = 60.0,
         fight_flips: int = 4,
+        guess_window: float = 15.0,
         history_per_entity: int = 25,
         feed_size: int = 200,
         context_cache: int = 50_000,
@@ -290,6 +336,7 @@ class Engine:
         self.ignored_entities = frozenset(ignored_entities)
         self.fight_window = fight_window
         self.fight_flips = fight_flips
+        self.guess_window = guess_window
         self.history_per_entity = history_per_entity
         self._user_name = user_name or (lambda uid: "a user")
         self.fmt_time = fmt_time
@@ -310,6 +357,9 @@ class Engine:
         self._run_times: dict[str, deque[float]] = {}
         self._run_names: dict[str, str] = {}
         self._run_peak: dict[str, int] = {}
+
+        self._cmd_by_entity: dict[str, Command] = {}
+        self._cmd_by_area: dict[str, Command] = {}
 
         self._listeners: list[Callable[[str, Any], None]] = []
 
@@ -360,6 +410,42 @@ class Engine:
             if burst > self._run_peak.get(run.entity_id, 0):
                 self._run_peak[run.entity_id] = burst
 
+    def record_command(self, cmd: Command) -> None:
+        """Remember a service call's targets, for devices that report back late."""
+        self.record_context(cmd.context_id, None, None)
+        for entity_id in cmd.entity_ids:
+            self._cmd_by_entity[entity_id] = cmd
+        for area in cmd.areas:
+            self._cmd_by_area[area] = cmd
+        if len(self._cmd_by_entity) > 20_000:
+            self._prune_commands(cmd.at)
+
+    def _prune_commands(self, now: float) -> None:
+        for store in (self._cmd_by_entity, self._cmd_by_area):
+            for key in [k for k, c in store.items() if now - c.at > self.guess_window]:
+                del store[key]
+
+    def _guess(self, change: StateChange, claim: bool) -> tuple[Command, str] | None:
+        """A recent command that likely caused a change the device reported on its own."""
+        if self.guess_window <= 0 or change.attr_only:
+            return None
+        for cmd, confidence in (
+            (self._cmd_by_entity.get(change.entity_id), "probably"),
+            (self._cmd_by_area.get(change.area) if change.area else None, "possibly"),
+        ):
+            if cmd is None or cmd.context_id == change.context_id:
+                continue
+            if not 0 <= change.at - cmd.at <= self.guess_window:
+                continue
+            if change.entity_id in cmd.claimed:
+                continue  # one command explains one report per entity
+            if not _consistent(cmd.service, change.new):
+                continue
+            if claim:
+                cmd.claimed.add(change.entity_id)
+            return cmd, confidence
+        return None
+
     def record_change(self, change: StateChange) -> Record | None:
         """Record a state change. Returns a Record if the entity is tracked."""
         self.record_context(change.context_id, change.user_id, change.parent_id)
@@ -367,7 +453,7 @@ class Engine:
             self._changes.put(change.context_id, change)
         if not self.is_tracked(change.entity_id):
             return None
-        links = self.explain(change)
+        links = self.explain(change, claim=True)
         record = Record(change, links, build_sentence(change, links, self.fmt_time))
         hist = self._history.get(change.entity_id)
         if hist is None:
@@ -381,8 +467,9 @@ class Engine:
 
     # ------------------------------------------------------------ explain
 
-    def explain(self, change: StateChange) -> list[Link]:
+    def explain(self, change: StateChange, claim: bool = False) -> list[Link]:
         links: list[Link] = []
+        guessed = False
         seen_ctx: set[str] = set()
         seen_runs: set[str] = set()
         cur: str | None = change.context_id
@@ -449,6 +536,19 @@ class Engine:
                 cur_user = pctx.user_id if pctx else None
                 cur_parent = pctx.parent_id if pctx else None
                 continue
+            if guessed and links[-1].kind == "probable":
+                break  # the command came from outside what HA can see (an add-on or API client)
+            if not links:
+                guess = self._guess(change, claim)
+                if guess is not None:
+                    cmd, confidence = guess
+                    links.append(Link("probable", cmd.context_id, cmd.service, confidence, cmd.at))
+                    guessed = True
+                    cur = cmd.context_id
+                    pctx = self._contexts.get(cur)
+                    cur_user = pctx.user_id if pctx else None
+                    cur_parent = pctx.parent_id if pctx else None
+                    continue
             links.append(Link("device", origin[0], origin[1]))
             break
         return links

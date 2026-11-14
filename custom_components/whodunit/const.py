@@ -3,7 +3,7 @@
 from .engine import DEFAULT_TRACKED_DOMAINS
 
 DOMAIN = "whodunit"
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 CONF_FIGHT_WINDOW = "fight_window"
 CONF_FIGHT_FLIPS = "fight_flips"
@@ -11,6 +11,7 @@ CONF_NOTIFY = "notify"
 CONF_TRACKED_DOMAINS = "tracked_domains"
 CONF_IGNORED_ENTITIES = "ignored_entities"
 CONF_HISTORY = "history_per_entity"
+CONF_GUESS_WINDOW = "guess_window"
 
 DEFAULTS = {
     CONF_FIGHT_WINDOW: 60,
@@ -19,6 +20,7 @@ DEFAULTS = {
     CONF_TRACKED_DOMAINS: list(DEFAULT_TRACKED_DOMAINS),
     CONF_IGNORED_ENTITIES: [],
     CONF_HISTORY: 25,
+    CONF_GUESS_WINDOW: 15,
 }
 
 SIGNAL_UPDATE = f"{DOMAIN}_update"

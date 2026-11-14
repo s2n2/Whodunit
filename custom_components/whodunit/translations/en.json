@@ -6,7 +6,9 @@
         "description": "Whodunit follows Home Assistant's context links to explain why each light, switch or helper changed, and warns you when automations fight over the same entity."
       }
     },
-    "abort": { "single_instance_allowed": "Whodunit is already set up." }
+    "abort": {
+      "single_instance_allowed": "Whodunit is already set up."
+    }
   },
   "options": {
     "step": {
@@ -18,21 +20,31 @@
           "notify": "Show a notification when a fight starts",
           "tracked_domains": "Domains to explain",
           "ignored_entities": "Entities to ignore",
-          "history_per_entity": "Changes remembered per entity"
+          "history_per_entity": "Changes remembered per entity",
+          "guess_window": "Late report window"
         },
         "data_description": {
           "fight_flips": "A fight starts when an entity changes this many times inside the window and at least two different actors caused those changes.",
           "fight_window": "How far back to look for flips, and how long a fight must be quiet to end.",
-          "tracked_domains": "Entities in other domains still appear as triggers in chains, they just don't get their own history."
+          "tracked_domains": "Entities in other domains still appear as triggers in chains, they just don't get their own history.",
+          "guess_window": "When a device reports a change on its own shortly after a command was sent to it (probably) or to something in the same area (possibly), name that command as the likely cause. 0 turns guessing off."
         }
       }
     }
   },
   "entity": {
-    "binary_sensor": { "fight": { "name": "Automation fight" } },
+    "binary_sensor": {
+      "fight": {
+        "name": "Automation fight"
+      }
+    },
     "sensor": {
-      "fights_today": { "name": "Fights today" },
-      "busiest_automation": { "name": "Busiest automation" }
+      "fights_today": {
+        "name": "Fights today"
+      },
+      "busiest_automation": {
+        "name": "Busiest automation"
+      }
     }
   },
   "services": {
@@ -40,8 +52,14 @@
       "name": "Explain",
       "description": "Explain why entities are in their current state, as data and as a sentence you can speak or send.",
       "fields": {
-        "entity_id": { "name": "Entities", "description": "Entities to explain." },
-        "limit": { "name": "Changes", "description": "How many recent changes to explain per entity." }
+        "entity_id": {
+          "name": "Entities",
+          "description": "Entities to explain."
+        },
+        "limit": {
+          "name": "Changes",
+          "description": "How many recent changes to explain per entity."
+        }
       }
     }
   }

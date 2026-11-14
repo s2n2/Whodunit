@@ -24,7 +24,7 @@ customElements.define("ha-card",class extends HTMLElement{});
   connection:{subscribeMessage:async(cb)=>{subs.push(cb);return()=>{}}},
   callWS:async(m)=>{const k=m.type.split("/")[1];if(k==="explain")return fx.explain[m.entity_id]||{entity_id:m.entity_id,changes:[],sentence:m.entity_id+" has not changed since Whodunit started.",tracked:true};return fx[k];}};
  const mk=(cfg)=>{const c=document.createElement("whodunit-card");c.setConfig(cfg);document.body.appendChild(c);c.hass=hass;return c};
- window.cards=[mk({}),mk({title:"Why are the candles off?",entity:"switch.lounge_candles"}),mk({default_tab:"fights"}),mk({default_tab:"busy"})];
+ window.cards=[mk({}),mk({title:"Why is the kitchen display on?",entity:"light.kitchen_display_unit_main"}),mk({default_tab:"fights"}),mk({default_tab:"busy"})];
  window.push=(d)=>subs.forEach(s=>s({kind:"change",data:d}));
 })();
 </script></body></html>

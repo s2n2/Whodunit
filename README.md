@@ -40,6 +40,32 @@ remembers those links in memory, and walks them backwards for each change.
 | **Device / integration** | Nothing in HA asked for it: a wall switch, a remote, the device itself, or a template. |
 | **Trigger** | A trigger with no state behind it: time pattern, sun, webhook, event. |
 | **Loop** | The chain led back to an automation already in it. |
+| **Probably / Possibly** | A guess for devices that report back late (see below). |
+
+## Devices that report back late
+
+Some devices don't confirm a command straight away. A WLED strip, a cloud
+switch, or a screen woken by an IR blaster reports its new state a few seconds
+later, in a fresh context. Home Assistant (and its logbook) loses the link, so
+the change looks like the device acted on its own.
+
+Whodunit remembers what each service call was aimed at. When a device reports a
+change on its own shortly afterwards, Whodunit names that call as the likely
+cause and keeps walking the chain from it:
+
+- **Probably**: the call targeted this entity or its device.
+- **Possibly**: the call targeted something in the same area, e.g. an IR
+  `remote.send_command` that wakes the kitchen screen.
+
+> Kitchen Display turned on at 13:55:32, possibly because of remote.send_command
+> 6s earlier, from script “Kitchen Display - Screen On”, called from automation
+> “Turn Kitchen Display On”, triggered by pir_kitchen1 changing off → on, which
+> the device reported itself.
+
+A call explains at most one report per entity, calls whose result contradicts the
+new state are ignored (a `turn_on` never explains `off`), and
+`homeassistant.update_entity` is never used. Set the window under Options; 0
+turns guessing off. Fights count the real actor behind a guess.
 
 ## Fights and loops
 
@@ -138,6 +164,7 @@ Settings → Devices & services → Whodunit → Configure.
 | Flips that make a fight | 4 | |
 | Fight window | 60 s | Also how long a fight must be quiet to end |
 | Notification on fight | on | |
+| Late report window | 15 s | How long after a command a late report can be pinned on it. 0 turns guessing off |
 | Domains to explain | lights, switches, covers, climate, fans, media players, locks, vacuums, helpers (`input_*`, `number`, `select`) and more | Other entities still appear as triggers in chains |
 | Entities to ignore | none | |
 | Changes per entity | 25 | |

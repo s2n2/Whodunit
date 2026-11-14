@@ -214,3 +214,96 @@ def test_as_dict_is_json_safe():
     e = make()
     rec = e.record_change(StateChange("light.a", "A", "off", "on", 1, "c"))
     json.dumps(rec.as_dict())
+
+
+# ---------------------------------------------------------------- guesses
+
+Command = engine.Command
+
+
+def cmd(ctx, service, entities=(), areas=(), at=0.0):
+    return Command(ctx, service, frozenset(entities), frozenset(areas), at)
+
+
+def test_kitchen_display_possibly_from_ir_command_in_same_area():
+    """Real case: an IR remote.send_command turns on a screen whose light reports 6 s later."""
+    e = make()
+    e.record_change(StateChange("binary_sensor.pir_kitchen1", "pir_kitchen1", "off", "on", 100, "c-pir"))
+    e.record_run(Run("automation", "automation.turn_display_on", "Turn Kitchen Display On",
+                     "state of binary_sensor.pir_kitchen1", "c-auto", "c-pir", None, 100.01))
+    e.record_run(Run("script", "script.1634521151793", "Kitchen Display - Screen On", None,
+                     "c-auto", "c-pir", None, 100.02))
+    e.record_command(cmd("c-auto", "remote.send_command", ["remote.kitchen_ir"], ["kitchen"], 100.03))
+    rec = e.record_change(StateChange("light.kitchen_display", "Kitchen Display", "off", "on", 106.1,
+                                      "c-fresh", area="kitchen"))
+    assert kinds(rec) == ["probable", "script", "automation", "trigger", "device"]
+    assert rec.links[0].detail == "possibly"
+    assert rec.actor.name == "Kitchen Display - Screen On"
+    assert rec.sentence == (
+        "Kitchen Display turned on at t106.1, possibly because of remote.send_command 6s earlier, "
+        "from script “Kitchen Display - Screen On”, called from automation “Turn Kitchen Display On”, "
+        "triggered by pir_kitchen1 changing off → on, which the device reported itself."
+    )
+
+
+def test_direct_target_is_probably_and_beats_area():
+    e = make()
+    e.record_command(cmd("c-area", "light.turn_on", ["light.other"], ["kitchen"], 10))
+    e.record_context("c-ui", "u-alex", None)
+    e.record_command(cmd("c-ui", "light.turn_on", ["light.wled"], ["kitchen"], 11))
+    rec = e.record_change(StateChange("light.wled", "WLED", "off", "on", 13, "c-dev", area="kitchen"))
+    assert kinds(rec) == ["probable", "user"]
+    assert rec.links[0].detail == "probably"
+    assert rec.sentence.endswith("probably because of light.turn_on 2s earlier, sent by Alex.")
+
+
+def test_guess_is_claimed_once_per_entity():
+    e = make()
+    e.record_command(cmd("c1", "media_player.play_media", ["media_player.tv"], (), 10))
+    first = e.record_change(StateChange("media_player.tv", "TV", "idle", "playing", 11, "d1"))
+    second = e.record_change(StateChange("media_player.tv", "TV", "playing", "paused", 12, "d2"))
+    assert kinds(first)[0] == "probable"
+    assert kinds(second) == ["device"]
+
+
+def test_no_guess_outside_window_or_when_contradicting():
+    e = make(guess_window=15)
+    e.record_command(cmd("c1", "light.turn_on", ["light.a"], (), 10))
+    assert kinds(e.record_change(StateChange("light.a", "A", "on", "off", 12, "d1"))) == ["device"]
+    e.record_command(cmd("c2", "light.turn_on", ["light.b"], (), 10))
+    assert kinds(e.record_change(StateChange("light.b", "B", "off", "on", 40, "d2"))) == ["device"]
+
+
+def test_guess_disabled():
+    e = make(guess_window=0)
+    e.record_command(cmd("c1", "light.turn_on", ["light.a"], (), 10))
+    assert kinds(e.record_change(StateChange("light.a", "A", "off", "on", 11, "d1"))) == ["device"]
+
+
+def test_command_from_outside_ha_stops_at_the_guess():
+    e = make()
+    e.record_command(cmd("c-nodered", "switch.turn_on", ["switch.pump"], (), 10))
+    rec = e.record_change(StateChange("switch.pump", "Pump", "off", "on", 11, "d1"))
+    assert kinds(rec) == ["probable"]
+    assert rec.sentence == "Pump turned on at t11, probably because of switch.turn_on 1s earlier."
+
+
+def test_normal_command_context_is_not_a_guess():
+    e = make()
+    e.record_context("c-ui", "u-alex", None)
+    e.record_command(cmd("c-ui", "light.turn_on", ["light.a"], (), 10))
+    rec = e.record_change(StateChange("light.a", "A", "off", "on", 10.1, "c-ui", user_id="u-alex"))
+    assert kinds(rec) == ["user"]
+
+
+def test_fight_actor_uses_the_real_actor_behind_a_guess():
+    e = make(fight_flips=4)
+    for i in range(4):
+        who = "a" if i % 2 == 0 else "b"
+        e.record_run(Run("automation", f"automation.{who}", who.upper(), "time pattern", f"r{i}", None, None, i * 5))
+        svc = "switch.turn_on" if i % 2 == 0 else "switch.turn_off"
+        e.record_command(cmd(f"r{i}", svc, ["switch.x"], (), i * 5 + 0.01))
+        old, new = ("off", "on") if i % 2 == 0 else ("on", "off")
+        e.record_change(StateChange("switch.x", "X", old, new, i * 5 + 2, f"dev{i}"))
+    fight = e.active_fights["switch.x"]
+    assert {a["name"] for a in fight.as_dict()["actors"]} == {"A", "B"}

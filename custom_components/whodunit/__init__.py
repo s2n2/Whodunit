@@ -27,7 +27,7 @@ from homeassistant.core import (
     SupportsResponse,
     callback,
 )
-from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import config_validation as cv, device_registry as dr, entity_registry as er
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_change, async_track_time_interval
 from homeassistant.helpers.typing import ConfigType
@@ -37,6 +37,7 @@ from .const import (
     CARD_URL,
     CONF_FIGHT_FLIPS,
     CONF_FIGHT_WINDOW,
+    CONF_GUESS_WINDOW,
     CONF_HISTORY,
     CONF_IGNORED_ENTITIES,
     CONF_NOTIFY,
@@ -48,7 +49,7 @@ from .const import (
     SIGNAL_UPDATE,
     VERSION,
 )
-from .engine import Engine, Fight, Run, StateChange, build_sentence
+from .engine import Command, Engine, Fight, Run, StateChange, build_sentence
 from . import websocket_api
 
 _LOGGER = logging.getLogger(__name__)
@@ -58,6 +59,24 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 EVENT_AUTOMATION_TRIGGERED = "automation_triggered"
 EVENT_SCRIPT_STARTED = "script_started"
+
+# Service calls that never change a device themselves, or that would make misleading guesses
+SKIP_DOMAINS = frozenset(
+    {"automation", "script", "logbook", "system_log", "persistent_notification", "notify", "tts",
+     "recorder", "logger", "frontend", "conversation", "counter", "timer", "whodunit"}
+)
+SKIP_SERVICES = frozenset(
+    {"homeassistant.update_entity", "homeassistant.reload_config_entry", "homeassistant.reload_all",
+     "homeassistant.check_config", "homeassistant.restart", "homeassistant.stop"}
+)
+
+
+def _as_list(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        return [v.strip() for v in value.split(",")] if "," in value else [value]
+    return [v for v in value if isinstance(v, str)]
 
 type WhodunitConfigEntry = ConfigEntry[Whodunit]
 
@@ -81,11 +100,15 @@ class Whodunit:
             fight_window=float(_opt(entry, CONF_FIGHT_WINDOW)),
             fight_flips=int(_opt(entry, CONF_FIGHT_FLIPS)),
             history_per_entity=int(_opt(entry, CONF_HISTORY)),
+            guess_window=float(_opt(entry, CONF_GUESS_WINDOW)),
             user_name=self.user_name,
             fmt_time=lambda at: dt_util.as_local(dt_util.utc_from_timestamp(at)).strftime("%H:%M:%S"),
         )
         self.fights_today = 0
         self._unsubs: list = []
+        self._er = er.async_get(hass)
+        self._dr = dr.async_get(hass)
+        self._area_cache: dict[str, str | None] = {}
 
     # ------------------------------------------------------------- users
 
@@ -110,6 +133,25 @@ class Whodunit:
         user = await self.hass.auth.async_get_user(user_id)
         if user and user.name:
             self._user_names[user_id] = user.name
+
+    # ------------------------------------------------------------ areas
+
+    def _area_of(self, entity_id: str) -> str | None:
+        try:
+            return self._area_cache[entity_id]
+        except KeyError:
+            pass
+        area = None
+        if (ent := self._er.async_get(entity_id)) is not None:
+            area = ent.area_id
+            if area is None and ent.device_id and (dev := self._dr.async_get(ent.device_id)):
+                area = dev.area_id
+        self._area_cache[entity_id] = area
+        return area
+
+    @callback
+    def _on_registry_updated(self, _event: Event) -> None:
+        self._area_cache.clear()
 
     # ------------------------------------------------------------ events
 
@@ -137,6 +179,7 @@ class Whodunit:
                 parent_id=ctx.parent_id,
                 user_id=ctx.user_id,
                 attr_only=attr_only,
+                area=self._area_of(new.entity_id) if self.engine.is_tracked(new.entity_id) else None,
             )
         )
 
@@ -167,6 +210,27 @@ class Whodunit:
     def _on_service(self, event: Event) -> None:
         ctx = event.context
         self.engine.record_context(ctx.id, ctx.user_id, ctx.parent_id)
+        if self.engine.guess_window <= 0:
+            return
+        data = event.data
+        domain, service = data.get("domain"), data.get("service")
+        if not domain or domain in SKIP_DOMAINS or f"{domain}.{service}" in SKIP_SERVICES:
+            return
+        sd = data.get("service_data") or {}
+        entities = {e for e in _as_list(sd.get("entity_id")) if "." in e}
+        areas = set(_as_list(sd.get("area_id")))
+        for device_id in _as_list(sd.get("device_id")):
+            entities.update(ent.entity_id for ent in er.async_entries_for_device(self._er, device_id))
+            if (dev := self._dr.async_get(device_id)) and dev.area_id:
+                areas.add(dev.area_id)
+        for entity_id in entities:
+            if area := self._area_of(entity_id):
+                areas.add(area)
+        if entities or areas:
+            self.engine.record_command(
+                Command(ctx.id, f"{domain}.{service}", frozenset(entities), frozenset(areas),
+                        event.time_fired_timestamp)
+            )
 
     @callback
     def _on_engine(self, kind: str, payload: Any) -> None:
@@ -215,6 +279,8 @@ class Whodunit:
             bus.async_listen(EVENT_AUTOMATION_TRIGGERED, self._on_automation),
             bus.async_listen(EVENT_SCRIPT_STARTED, self._on_script),
             bus.async_listen(EVENT_CALL_SERVICE, self._on_service),
+            bus.async_listen(er.EVENT_ENTITY_REGISTRY_UPDATED, self._on_registry_updated),
+            bus.async_listen(dr.EVENT_DEVICE_REGISTRY_UPDATED, self._on_registry_updated),
             self.engine.add_listener(self._on_engine),
             async_track_time_interval(self.hass, self._tick, timedelta(seconds=10)),
             # the busiest automation sensor drifts as the hour rolls on

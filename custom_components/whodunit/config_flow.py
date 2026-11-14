@@ -13,6 +13,7 @@ from homeassistant.helpers import selector
 from .const import (
     CONF_FIGHT_FLIPS,
     CONF_FIGHT_WINDOW,
+    CONF_GUESS_WINDOW,
     CONF_HISTORY,
     CONF_IGNORED_ENTITIES,
     CONF_NOTIFY,
@@ -57,6 +58,11 @@ class WhodunitOptionsFlow(OptionsFlow):
                     )
                 ),
                 vol.Required(CONF_NOTIFY, default=opts[CONF_NOTIFY]): selector.BooleanSelector(),
+                vol.Required(CONF_GUESS_WINDOW, default=opts[CONF_GUESS_WINDOW]): selector.NumberSelector(
+                    selector.NumberSelectorConfig(
+                        min=0, max=120, step=1, unit_of_measurement="s", mode=selector.NumberSelectorMode.BOX
+                    )
+                ),
                 vol.Required(CONF_TRACKED_DOMAINS, default=opts[CONF_TRACKED_DOMAINS]): selector.SelectSelector(
                     selector.SelectSelectorConfig(
                         options=DOMAIN_CHOICES, multiple=True, mode=selector.SelectSelectorMode.DROPDOWN
