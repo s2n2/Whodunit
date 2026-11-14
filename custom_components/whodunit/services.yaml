@@ -1,0 +1,14 @@
+explain:
+  fields:
+    entity_id:
+      required: true
+      example: light.hallway
+      selector:
+        entity:
+          multiple: true
+    limit:
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 50

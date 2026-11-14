@@ -1,0 +1,48 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Whodunit",
+        "description": "Whodunit follows Home Assistant's context links to explain why each light, switch or helper changed, and warns you when automations fight over the same entity."
+      }
+    },
+    "abort": { "single_instance_allowed": "Whodunit is already set up." }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Whodunit options",
+        "data": {
+          "fight_flips": "Flips that make a fight",
+          "fight_window": "Fight window",
+          "notify": "Show a notification when a fight starts",
+          "tracked_domains": "Domains to explain",
+          "ignored_entities": "Entities to ignore",
+          "history_per_entity": "Changes remembered per entity"
+        },
+        "data_description": {
+          "fight_flips": "A fight starts when an entity changes this many times inside the window and at least two different actors caused those changes.",
+          "fight_window": "How far back to look for flips, and how long a fight must be quiet to end.",
+          "tracked_domains": "Entities in other domains still appear as triggers in chains, they just don't get their own history."
+        }
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": { "fight": { "name": "Automation fight" } },
+    "sensor": {
+      "fights_today": { "name": "Fights today" },
+      "busiest_automation": { "name": "Busiest automation" }
+    }
+  },
+  "services": {
+    "explain": {
+      "name": "Explain",
+      "description": "Explain why entities are in their current state, as data and as a sentence you can speak or send.",
+      "fields": {
+        "entity_id": { "name": "Entities", "description": "Entities to explain." },
+        "limit": { "name": "Changes", "description": "How many recent changes to explain per entity." }
+      }
+    }
+  }
+}

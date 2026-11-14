@@ -1,0 +1,1049 @@
+{
+ "recent": {
+  "changes": [
+   {
+    "entity_id": "light.hallway",
+    "name": "Hallway Lights",
+    "old": "off",
+    "new": "on",
+    "at": 1794617376.0388436,
+    "attr_only": false,
+    "context_id": "app1",
+    "links": [
+     {
+      "kind": "user",
+      "id": "u2",
+      "name": "Sam",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Hallway Lights turned on at 13:49:36 because Sam did it."
+   },
+   {
+    "entity_id": "switch.towel_rail_bathroom",
+    "name": "Towel Rail Bathroom",
+    "old": "on",
+    "new": "off",
+    "at": 1794617373.0388436,
+    "attr_only": false,
+    "context_id": "tr5",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.bathroom_towel_rail_daily",
+      "name": "Towel rail · daily request",
+      "detail": "time pattern",
+      "at": 1794617372.9388437
+     },
+     {
+      "kind": "source",
+      "id": null,
+      "name": "time pattern",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Towel Rail Bathroom turned off at 13:49:33 because automation “Towel rail · daily request” ran, on a time pattern trigger."
+   },
+   {
+    "entity_id": "switch.towel_rail_bathroom",
+    "name": "Towel Rail Bathroom",
+    "old": "off",
+    "new": "on",
+    "at": 1794617368.9388437,
+    "attr_only": false,
+    "context_id": "tr4",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.bathroom_towel_rail_energy",
+      "name": "Towel rail · energy-aware start",
+      "detail": "state of sensor.electricity_solar_surplus_power",
+      "at": 1794617368.8388438
+     },
+     {
+      "kind": "trigger",
+      "id": "sensor.electricity_solar_surplus_power",
+      "name": "Solar surplus",
+      "detail": "1200 → 1450",
+      "at": 1794617368.8288438
+     },
+     {
+      "kind": "device",
+      "id": "sensor.electricity_solar_surplus_power",
+      "name": "Solar surplus",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Towel Rail Bathroom turned on at 13:49:28 because automation “Towel rail · energy-aware start” ran, triggered by Solar surplus changing 1200 → 1450, which the device reported itself."
+   },
+   {
+    "entity_id": "switch.towel_rail_bathroom",
+    "name": "Towel Rail Bathroom",
+    "old": "on",
+    "new": "off",
+    "at": 1794617364.8388438,
+    "attr_only": false,
+    "context_id": "tr3",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.bathroom_towel_rail_daily",
+      "name": "Towel rail · daily request",
+      "detail": "time pattern",
+      "at": 1794617364.738844
+     },
+     {
+      "kind": "source",
+      "id": null,
+      "name": "time pattern",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Towel Rail Bathroom turned off at 13:49:24 because automation “Towel rail · daily request” ran, on a time pattern trigger."
+   },
+   {
+    "entity_id": "switch.towel_rail_bathroom",
+    "name": "Towel Rail Bathroom",
+    "old": "off",
+    "new": "on",
+    "at": 1794617360.738844,
+    "attr_only": false,
+    "context_id": "tr2",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.bathroom_towel_rail_energy",
+      "name": "Towel rail · energy-aware start",
+      "detail": "state of sensor.electricity_solar_surplus_power",
+      "at": 1794617360.638844
+     },
+     {
+      "kind": "trigger",
+      "id": "sensor.electricity_solar_surplus_power",
+      "name": "Solar surplus",
+      "detail": "1200 → 1450",
+      "at": 1794617360.628844
+     },
+     {
+      "kind": "device",
+      "id": "sensor.electricity_solar_surplus_power",
+      "name": "Solar surplus",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Towel Rail Bathroom turned on at 13:49:20 because automation “Towel rail · energy-aware start” ran, triggered by Solar surplus changing 1200 → 1450, which the device reported itself."
+   },
+   {
+    "entity_id": "switch.towel_rail_bathroom",
+    "name": "Towel Rail Bathroom",
+    "old": "on",
+    "new": "off",
+    "at": 1794617356.638844,
+    "attr_only": false,
+    "context_id": "tr1",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.bathroom_towel_rail_daily",
+      "name": "Towel rail · daily request",
+      "detail": "time pattern",
+      "at": 1794617356.538844
+     },
+     {
+      "kind": "source",
+      "id": null,
+      "name": "time pattern",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Towel Rail Bathroom turned off at 13:49:16 because automation “Towel rail · daily request” ran, on a time pattern trigger."
+   },
+   {
+    "entity_id": "switch.towel_rail_bathroom",
+    "name": "Towel Rail Bathroom",
+    "old": "off",
+    "new": "on",
+    "at": 1794617352.538844,
+    "attr_only": false,
+    "context_id": "tr0",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.bathroom_towel_rail_energy",
+      "name": "Towel rail · energy-aware start",
+      "detail": "state of sensor.electricity_solar_surplus_power",
+      "at": 1794617352.4388442
+     },
+     {
+      "kind": "trigger",
+      "id": "sensor.electricity_solar_surplus_power",
+      "name": "Solar surplus",
+      "detail": "1200 → 1450",
+      "at": 1794617352.4288442
+     },
+     {
+      "kind": "device",
+      "id": "sensor.electricity_solar_surplus_power",
+      "name": "Solar surplus",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Towel Rail Bathroom turned on at 13:49:12 because automation “Towel rail · energy-aware start” ran, triggered by Solar surplus changing 1200 → 1450, which the device reported itself."
+   },
+   {
+    "entity_id": "switch.lounge_candles",
+    "name": "Lounge candles",
+    "old": "on",
+    "new": "off",
+    "at": 1794617348.4388442,
+    "attr_only": false,
+    "context_id": "dim",
+    "links": [
+     {
+      "kind": "script",
+      "id": "script.loungecandles_off_broadlink",
+      "name": "LoungeCandles Off - Broadlink",
+      "detail": null,
+      "at": 1794617348.2388442
+     },
+     {
+      "kind": "automation",
+      "id": "automation.turn_off_marantz_if_tv_turns_off",
+      "name": "Dim lounge when TV on",
+      "detail": "state of media_player.lounge",
+      "at": 1794617348.2288442
+     },
+     {
+      "kind": "trigger",
+      "id": "media_player.lounge",
+      "name": "Lounge",
+      "detail": "off → on",
+      "at": 1794617348.2088442
+     },
+     {
+      "kind": "automation",
+      "id": "automation.movie_mode_on",
+      "name": "Movie mode · start",
+      "detail": "state of input_boolean.movie_mode",
+      "at": 1794617347.808844
+     },
+     {
+      "kind": "trigger",
+      "id": "input_boolean.movie_mode",
+      "name": "Movie mode",
+      "detail": "off → on",
+      "at": 1794617347.788844
+     },
+     {
+      "kind": "user",
+      "id": "u1",
+      "name": "Alex",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Lounge candles turned off at 13:49:08 because script “LoungeCandles Off - Broadlink” ran, called from automation “Dim lounge when TV on”, triggered by Lounge changing off → on, which automation “Movie mode · start” did, triggered by Movie mode changing off → on, which Alex did."
+   },
+   {
+    "entity_id": "media_player.lounge",
+    "name": "Lounge",
+    "old": "off",
+    "new": "on",
+    "at": 1794617348.2088442,
+    "attr_only": false,
+    "context_id": "mm",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.movie_mode_on",
+      "name": "Movie mode · start",
+      "detail": "state of input_boolean.movie_mode",
+      "at": 1794617347.808844
+     },
+     {
+      "kind": "trigger",
+      "id": "input_boolean.movie_mode",
+      "name": "Movie mode",
+      "detail": "off → on",
+      "at": 1794617347.788844
+     },
+     {
+      "kind": "user",
+      "id": "u1",
+      "name": "Alex",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Lounge turned on at 13:49:08 because automation “Movie mode · start” ran, triggered by Movie mode changing off → on, which Alex did."
+   },
+   {
+    "entity_id": "input_boolean.movie_mode",
+    "name": "Movie mode",
+    "old": "off",
+    "new": "on",
+    "at": 1794617347.788844,
+    "attr_only": false,
+    "context_id": "svc1",
+    "links": [
+     {
+      "kind": "user",
+      "id": "u1",
+      "name": "Alex",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Movie mode turned on at 13:49:07 because Alex did it."
+   },
+   {
+    "entity_id": "light.lounge_lights_scaled",
+    "name": "Lounge lights",
+    "old": "on",
+    "new": "off",
+    "at": 1794617342.788844,
+    "attr_only": false,
+    "context_id": "ml2x",
+    "links": [
+     {
+      "kind": "device",
+      "id": "light.lounge_lights_scaled",
+      "name": "Lounge lights",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Lounge lights turned off at 13:49:02 because the device or its integration reported it directly."
+   },
+   {
+    "entity_id": "light.lounge_lights_scaled",
+    "name": "Lounge lights",
+    "old": "off",
+    "new": "on",
+    "at": 1794617282.788844,
+    "attr_only": false,
+    "context_id": "ml2",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.motion_in_lounge_2",
+      "name": "Motion in Lounge",
+      "detail": "state of binary_sensor.pir_lounge1",
+      "at": 1794617282.7388442
+     },
+     {
+      "kind": "trigger",
+      "id": "binary_sensor.pir_lounge1",
+      "name": "pir_lounge1",
+      "detail": "off → on",
+      "at": 1794617282.7288442
+     },
+     {
+      "kind": "device",
+      "id": "binary_sensor.pir_lounge1",
+      "name": "pir_lounge1",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Lounge lights turned on at 13:48:02 because automation “Motion in Lounge” ran, triggered by pir_lounge1 changing off → on, which the device reported itself."
+   },
+   {
+    "entity_id": "light.lounge_lights_scaled",
+    "name": "Lounge lights",
+    "old": "on",
+    "new": "off",
+    "at": 1794617262.7288442,
+    "attr_only": false,
+    "context_id": "ml1x",
+    "links": [
+     {
+      "kind": "device",
+      "id": "light.lounge_lights_scaled",
+      "name": "Lounge lights",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Lounge lights turned off at 13:47:42 because the device or its integration reported it directly."
+   },
+   {
+    "entity_id": "light.lounge_lights_scaled",
+    "name": "Lounge lights",
+    "old": "off",
+    "new": "on",
+    "at": 1794617202.7288442,
+    "attr_only": false,
+    "context_id": "ml1",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.motion_in_lounge_2",
+      "name": "Motion in Lounge",
+      "detail": "state of binary_sensor.pir_lounge1",
+      "at": 1794617202.6788442
+     },
+     {
+      "kind": "trigger",
+      "id": "binary_sensor.pir_lounge1",
+      "name": "pir_lounge1",
+      "detail": "off → on",
+      "at": 1794617202.6688442
+     },
+     {
+      "kind": "device",
+      "id": "binary_sensor.pir_lounge1",
+      "name": "pir_lounge1",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Lounge lights turned on at 13:46:42 because automation “Motion in Lounge” ran, triggered by pir_lounge1 changing off → on, which the device reported itself."
+   },
+   {
+    "entity_id": "light.lounge_lights_scaled",
+    "name": "Lounge lights",
+    "old": "on",
+    "new": "off",
+    "at": 1794617182.6688442,
+    "attr_only": false,
+    "context_id": "ml0x",
+    "links": [
+     {
+      "kind": "device",
+      "id": "light.lounge_lights_scaled",
+      "name": "Lounge lights",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Lounge lights turned off at 13:46:22 because the device or its integration reported it directly."
+   },
+   {
+    "entity_id": "light.lounge_lights_scaled",
+    "name": "Lounge lights",
+    "old": "off",
+    "new": "on",
+    "at": 1794617122.6688442,
+    "attr_only": false,
+    "context_id": "ml0",
+    "links": [
+     {
+      "kind": "automation",
+      "id": "automation.motion_in_lounge_2",
+      "name": "Motion in Lounge",
+      "detail": "state of binary_sensor.pir_lounge1",
+      "at": 1794617122.6188443
+     },
+     {
+      "kind": "trigger",
+      "id": "binary_sensor.pir_lounge1",
+      "name": "pir_lounge1",
+      "detail": "off → on",
+      "at": 1794617122.6088443
+     },
+     {
+      "kind": "device",
+      "id": "binary_sensor.pir_lounge1",
+      "name": "pir_lounge1",
+      "detail": null,
+      "at": null
+     }
+    ],
+    "sentence": "Lounge lights turned on at 13:45:22 because automation “Motion in Lounge” ran, triggered by pir_lounge1 changing off → on, which the device reported itself."
+   }
+  ]
+ },
+ "explain": {
+  "switch.lounge_candles": {
+   "entity_id": "switch.lounge_candles",
+   "name": "Lounge candles",
+   "tracked": true,
+   "changes": [
+    {
+     "entity_id": "switch.lounge_candles",
+     "name": "Lounge candles",
+     "old": "on",
+     "new": "off",
+     "at": 1794617348.4388442,
+     "attr_only": false,
+     "context_id": "dim",
+     "links": [
+      {
+       "kind": "script",
+       "id": "script.loungecandles_off_broadlink",
+       "name": "LoungeCandles Off - Broadlink",
+       "detail": null,
+       "at": 1794617348.2388442
+      },
+      {
+       "kind": "automation",
+       "id": "automation.turn_off_marantz_if_tv_turns_off",
+       "name": "Dim lounge when TV on",
+       "detail": "state of media_player.lounge",
+       "at": 1794617348.2288442
+      },
+      {
+       "kind": "trigger",
+       "id": "media_player.lounge",
+       "name": "Lounge",
+       "detail": "off → on",
+       "at": 1794617348.2088442
+      },
+      {
+       "kind": "automation",
+       "id": "automation.movie_mode_on",
+       "name": "Movie mode · start",
+       "detail": "state of input_boolean.movie_mode",
+       "at": 1794617347.808844
+      },
+      {
+       "kind": "trigger",
+       "id": "input_boolean.movie_mode",
+       "name": "Movie mode",
+       "detail": "off → on",
+       "at": 1794617347.788844
+      },
+      {
+       "kind": "user",
+       "id": "u1",
+       "name": "Alex",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Lounge candles turned off at 13:49:08 because script “LoungeCandles Off - Broadlink” ran, called from automation “Dim lounge when TV on”, triggered by Lounge changing off → on, which automation “Movie mode · start” did, triggered by Movie mode changing off → on, which Alex did."
+    }
+   ],
+   "sentence": "Lounge candles turned off at 13:49:08 because script “LoungeCandles Off - Broadlink” ran, called from automation “Dim lounge when TV on”, triggered by Lounge changing off → on, which automation “Movie mode · start” did, triggered by Movie mode changing off → on, which Alex did."
+  },
+  "light.lounge_lights_scaled": {
+   "entity_id": "light.lounge_lights_scaled",
+   "name": "Lounge lights",
+   "tracked": true,
+   "changes": [
+    {
+     "entity_id": "light.lounge_lights_scaled",
+     "name": "Lounge lights",
+     "old": "on",
+     "new": "off",
+     "at": 1794617342.788844,
+     "attr_only": false,
+     "context_id": "ml2x",
+     "links": [
+      {
+       "kind": "device",
+       "id": "light.lounge_lights_scaled",
+       "name": "Lounge lights",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Lounge lights turned off at 13:49:02 because the device or its integration reported it directly."
+    },
+    {
+     "entity_id": "light.lounge_lights_scaled",
+     "name": "Lounge lights",
+     "old": "off",
+     "new": "on",
+     "at": 1794617282.788844,
+     "attr_only": false,
+     "context_id": "ml2",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.motion_in_lounge_2",
+       "name": "Motion in Lounge",
+       "detail": "state of binary_sensor.pir_lounge1",
+       "at": 1794617282.7388442
+      },
+      {
+       "kind": "trigger",
+       "id": "binary_sensor.pir_lounge1",
+       "name": "pir_lounge1",
+       "detail": "off → on",
+       "at": 1794617282.7288442
+      },
+      {
+       "kind": "device",
+       "id": "binary_sensor.pir_lounge1",
+       "name": "pir_lounge1",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Lounge lights turned on at 13:48:02 because automation “Motion in Lounge” ran, triggered by pir_lounge1 changing off → on, which the device reported itself."
+    },
+    {
+     "entity_id": "light.lounge_lights_scaled",
+     "name": "Lounge lights",
+     "old": "on",
+     "new": "off",
+     "at": 1794617262.7288442,
+     "attr_only": false,
+     "context_id": "ml1x",
+     "links": [
+      {
+       "kind": "device",
+       "id": "light.lounge_lights_scaled",
+       "name": "Lounge lights",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Lounge lights turned off at 13:47:42 because the device or its integration reported it directly."
+    },
+    {
+     "entity_id": "light.lounge_lights_scaled",
+     "name": "Lounge lights",
+     "old": "off",
+     "new": "on",
+     "at": 1794617202.7288442,
+     "attr_only": false,
+     "context_id": "ml1",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.motion_in_lounge_2",
+       "name": "Motion in Lounge",
+       "detail": "state of binary_sensor.pir_lounge1",
+       "at": 1794617202.6788442
+      },
+      {
+       "kind": "trigger",
+       "id": "binary_sensor.pir_lounge1",
+       "name": "pir_lounge1",
+       "detail": "off → on",
+       "at": 1794617202.6688442
+      },
+      {
+       "kind": "device",
+       "id": "binary_sensor.pir_lounge1",
+       "name": "pir_lounge1",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Lounge lights turned on at 13:46:42 because automation “Motion in Lounge” ran, triggered by pir_lounge1 changing off → on, which the device reported itself."
+    },
+    {
+     "entity_id": "light.lounge_lights_scaled",
+     "name": "Lounge lights",
+     "old": "on",
+     "new": "off",
+     "at": 1794617182.6688442,
+     "attr_only": false,
+     "context_id": "ml0x",
+     "links": [
+      {
+       "kind": "device",
+       "id": "light.lounge_lights_scaled",
+       "name": "Lounge lights",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Lounge lights turned off at 13:46:22 because the device or its integration reported it directly."
+    },
+    {
+     "entity_id": "light.lounge_lights_scaled",
+     "name": "Lounge lights",
+     "old": "off",
+     "new": "on",
+     "at": 1794617122.6688442,
+     "attr_only": false,
+     "context_id": "ml0",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.motion_in_lounge_2",
+       "name": "Motion in Lounge",
+       "detail": "state of binary_sensor.pir_lounge1",
+       "at": 1794617122.6188443
+      },
+      {
+       "kind": "trigger",
+       "id": "binary_sensor.pir_lounge1",
+       "name": "pir_lounge1",
+       "detail": "off → on",
+       "at": 1794617122.6088443
+      },
+      {
+       "kind": "device",
+       "id": "binary_sensor.pir_lounge1",
+       "name": "pir_lounge1",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Lounge lights turned on at 13:45:22 because automation “Motion in Lounge” ran, triggered by pir_lounge1 changing off → on, which the device reported itself."
+    }
+   ],
+   "sentence": "Lounge lights turned off at 13:49:02 because the device or its integration reported it directly."
+  },
+  "switch.towel_rail_bathroom": {
+   "entity_id": "switch.towel_rail_bathroom",
+   "name": "Towel Rail Bathroom",
+   "tracked": true,
+   "changes": [
+    {
+     "entity_id": "switch.towel_rail_bathroom",
+     "name": "Towel Rail Bathroom",
+     "old": "on",
+     "new": "off",
+     "at": 1794617373.0388436,
+     "attr_only": false,
+     "context_id": "tr5",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.bathroom_towel_rail_daily",
+       "name": "Towel rail · daily request",
+       "detail": "time pattern",
+       "at": 1794617372.9388437
+      },
+      {
+       "kind": "source",
+       "id": null,
+       "name": "time pattern",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Towel Rail Bathroom turned off at 13:49:33 because automation “Towel rail · daily request” ran, on a time pattern trigger."
+    },
+    {
+     "entity_id": "switch.towel_rail_bathroom",
+     "name": "Towel Rail Bathroom",
+     "old": "off",
+     "new": "on",
+     "at": 1794617368.9388437,
+     "attr_only": false,
+     "context_id": "tr4",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.bathroom_towel_rail_energy",
+       "name": "Towel rail · energy-aware start",
+       "detail": "state of sensor.electricity_solar_surplus_power",
+       "at": 1794617368.8388438
+      },
+      {
+       "kind": "trigger",
+       "id": "sensor.electricity_solar_surplus_power",
+       "name": "Solar surplus",
+       "detail": "1200 → 1450",
+       "at": 1794617368.8288438
+      },
+      {
+       "kind": "device",
+       "id": "sensor.electricity_solar_surplus_power",
+       "name": "Solar surplus",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Towel Rail Bathroom turned on at 13:49:28 because automation “Towel rail · energy-aware start” ran, triggered by Solar surplus changing 1200 → 1450, which the device reported itself."
+    },
+    {
+     "entity_id": "switch.towel_rail_bathroom",
+     "name": "Towel Rail Bathroom",
+     "old": "on",
+     "new": "off",
+     "at": 1794617364.8388438,
+     "attr_only": false,
+     "context_id": "tr3",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.bathroom_towel_rail_daily",
+       "name": "Towel rail · daily request",
+       "detail": "time pattern",
+       "at": 1794617364.738844
+      },
+      {
+       "kind": "source",
+       "id": null,
+       "name": "time pattern",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Towel Rail Bathroom turned off at 13:49:24 because automation “Towel rail · daily request” ran, on a time pattern trigger."
+    },
+    {
+     "entity_id": "switch.towel_rail_bathroom",
+     "name": "Towel Rail Bathroom",
+     "old": "off",
+     "new": "on",
+     "at": 1794617360.738844,
+     "attr_only": false,
+     "context_id": "tr2",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.bathroom_towel_rail_energy",
+       "name": "Towel rail · energy-aware start",
+       "detail": "state of sensor.electricity_solar_surplus_power",
+       "at": 1794617360.638844
+      },
+      {
+       "kind": "trigger",
+       "id": "sensor.electricity_solar_surplus_power",
+       "name": "Solar surplus",
+       "detail": "1200 → 1450",
+       "at": 1794617360.628844
+      },
+      {
+       "kind": "device",
+       "id": "sensor.electricity_solar_surplus_power",
+       "name": "Solar surplus",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Towel Rail Bathroom turned on at 13:49:20 because automation “Towel rail · energy-aware start” ran, triggered by Solar surplus changing 1200 → 1450, which the device reported itself."
+    },
+    {
+     "entity_id": "switch.towel_rail_bathroom",
+     "name": "Towel Rail Bathroom",
+     "old": "on",
+     "new": "off",
+     "at": 1794617356.638844,
+     "attr_only": false,
+     "context_id": "tr1",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.bathroom_towel_rail_daily",
+       "name": "Towel rail · daily request",
+       "detail": "time pattern",
+       "at": 1794617356.538844
+      },
+      {
+       "kind": "source",
+       "id": null,
+       "name": "time pattern",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Towel Rail Bathroom turned off at 13:49:16 because automation “Towel rail · daily request” ran, on a time pattern trigger."
+    },
+    {
+     "entity_id": "switch.towel_rail_bathroom",
+     "name": "Towel Rail Bathroom",
+     "old": "off",
+     "new": "on",
+     "at": 1794617352.538844,
+     "attr_only": false,
+     "context_id": "tr0",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.bathroom_towel_rail_energy",
+       "name": "Towel rail · energy-aware start",
+       "detail": "state of sensor.electricity_solar_surplus_power",
+       "at": 1794617352.4388442
+      },
+      {
+       "kind": "trigger",
+       "id": "sensor.electricity_solar_surplus_power",
+       "name": "Solar surplus",
+       "detail": "1200 → 1450",
+       "at": 1794617352.4288442
+      },
+      {
+       "kind": "device",
+       "id": "sensor.electricity_solar_surplus_power",
+       "name": "Solar surplus",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Towel Rail Bathroom turned on at 13:49:12 because automation “Towel rail · energy-aware start” ran, triggered by Solar surplus changing 1200 → 1450, which the device reported itself."
+    }
+   ],
+   "sentence": "Towel Rail Bathroom turned off at 13:49:33 because automation “Towel rail · daily request” ran, on a time pattern trigger."
+  },
+  "light.hallway": {
+   "entity_id": "light.hallway",
+   "name": "Hallway Lights",
+   "tracked": true,
+   "changes": [
+    {
+     "entity_id": "light.hallway",
+     "name": "Hallway Lights",
+     "old": "off",
+     "new": "on",
+     "at": 1794617376.0388436,
+     "attr_only": false,
+     "context_id": "app1",
+     "links": [
+      {
+       "kind": "user",
+       "id": "u2",
+       "name": "Sam",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Hallway Lights turned on at 13:49:36 because Sam did it."
+    }
+   ],
+   "sentence": "Hallway Lights turned on at 13:49:36 because Sam did it."
+  },
+  "media_player.lounge": {
+   "entity_id": "media_player.lounge",
+   "name": "Lounge",
+   "tracked": true,
+   "changes": [
+    {
+     "entity_id": "media_player.lounge",
+     "name": "Lounge",
+     "old": "off",
+     "new": "on",
+     "at": 1794617348.2088442,
+     "attr_only": false,
+     "context_id": "mm",
+     "links": [
+      {
+       "kind": "automation",
+       "id": "automation.movie_mode_on",
+       "name": "Movie mode · start",
+       "detail": "state of input_boolean.movie_mode",
+       "at": 1794617347.808844
+      },
+      {
+       "kind": "trigger",
+       "id": "input_boolean.movie_mode",
+       "name": "Movie mode",
+       "detail": "off → on",
+       "at": 1794617347.788844
+      },
+      {
+       "kind": "user",
+       "id": "u1",
+       "name": "Alex",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Lounge turned on at 13:49:08 because automation “Movie mode · start” ran, triggered by Movie mode changing off → on, which Alex did."
+    }
+   ],
+   "sentence": "Lounge turned on at 13:49:08 because automation “Movie mode · start” ran, triggered by Movie mode changing off → on, which Alex did."
+  },
+  "input_boolean.movie_mode": {
+   "entity_id": "input_boolean.movie_mode",
+   "name": "Movie mode",
+   "tracked": true,
+   "changes": [
+    {
+     "entity_id": "input_boolean.movie_mode",
+     "name": "Movie mode",
+     "old": "off",
+     "new": "on",
+     "at": 1794617347.788844,
+     "attr_only": false,
+     "context_id": "svc1",
+     "links": [
+      {
+       "kind": "user",
+       "id": "u1",
+       "name": "Alex",
+       "detail": null,
+       "at": null
+      }
+     ],
+     "sentence": "Movie mode turned on at 13:49:07 because Alex did it."
+    }
+   ],
+   "sentence": "Movie mode turned on at 13:49:07 because Alex did it."
+  }
+ },
+ "fights": {
+  "active": [
+   {
+    "entity_id": "switch.towel_rail_bathroom",
+    "name": "Towel Rail Bathroom",
+    "kind": "fight",
+    "started": 1794617352.538844,
+    "last": 1794617373.0388436,
+    "flips": 6,
+    "active": true,
+    "actors": [
+     {
+      "kind": "automation",
+      "id": "automation.bathroom_towel_rail_energy",
+      "name": "Towel rail · energy-aware start",
+      "count": 3
+     },
+     {
+      "kind": "automation",
+      "id": "automation.bathroom_towel_rail_daily",
+      "name": "Towel rail · daily request",
+      "count": 3
+     }
+    ],
+    "summary": "Towel rail · energy-aware start and Towel rail · daily request are fighting over Towel Rail Bathroom (6 flips)"
+   }
+  ],
+  "recent": [],
+  "window": 60.0,
+  "flips": 4
+ },
+ "busy": {
+  "automations": [
+   {
+    "entity_id": "automation.energy_schedule_dispatcher",
+    "name": "Energy schedule · dispatcher",
+    "runs_last_hour": 12,
+    "peak_per_second": 1
+   },
+   {
+    "entity_id": "automation.bathroom_heated_clothes_horse_energy_aware_start_controller",
+    "name": "Bathroom heated clothes horse · energy-aware start controller",
+    "runs_last_hour": 4,
+    "peak_per_second": 4
+   },
+   {
+    "entity_id": "automation.motion_in_lounge_2",
+    "name": "Motion in Lounge",
+    "runs_last_hour": 3,
+    "peak_per_second": 1
+   },
+   {
+    "entity_id": "automation.bathroom_towel_rail_energy",
+    "name": "Towel rail · energy-aware start",
+    "runs_last_hour": 3,
+    "peak_per_second": 1
+   },
+   {
+    "entity_id": "automation.bathroom_towel_rail_daily",
+    "name": "Towel rail · daily request",
+    "runs_last_hour": 3,
+    "peak_per_second": 1
+   },
+   {
+    "entity_id": "automation.movie_mode_on",
+    "name": "Movie mode · start",
+    "runs_last_hour": 1,
+    "peak_per_second": 1
+   },
+   {
+    "entity_id": "automation.turn_off_marantz_if_tv_turns_off",
+    "name": "Dim lounge when TV on",
+    "runs_last_hour": 1,
+    "peak_per_second": 1
+   }
+  ]
+ }
+}
